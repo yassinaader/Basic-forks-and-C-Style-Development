@@ -1,0 +1,158 @@
+Example 1 — fork() Process Creation
+#include <stdio.h>
+#include <unistd.h>
+
+
+int main() {
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        printf("This is the child process. PID: %d\n", getpid());
+    }
+    else if (pid > 0) {
+        printf("This is the parent process. PID: %d\n", getpid());
+    }
+    else {
+        printf("Fork failed!\n");
+    }
+
+    return 0;
+}
+
+Explanation
+
+The program calls fork(), which creates a new process.
+
+After fork():
+
+pid == 0 → Child process
+Executes the child block.
+
+pid > 0 → Parent process
+Receives the child’s PID and runs its own block.
+
+pid < 0 → Error
+
+Result: Two processes run the same program but execute different code sections.
+
+
+Example 2 — Background Process
+sleep 300 &
+
+Explanation
+
+sleep 300 pauses for 300 seconds.
+
+Adding & runs it in the background.
+
+Terminal is still free to use.
+
+You can see background jobs with:
+
+jobs
+
+Example 3 — Stopping Processes
+
+Find the PID:
+
+ps aux | grep sleep
+
+
+Kill it:
+
+kill <PID>
+
+
+Verify it stopped:
+
+ps aux | grep sleep
+
+Explanation
+
+ps lists running processes.
+
+grep sleep filters only sleep-related processes.
+
+kill sends the SIGTERM signal to stop the process.
+
+
+
+Example 4 — Pause and Resume a Process
+
+Pause:
+
+kill -STOP <PID>
+
+
+Resume:
+
+kill -CONT <PID>
+
+Explanation
+
+-STOP sends a signal that freezes the process (like pressing pause).
+
+-CONT resumes it.
+
+The program remains in memory but does not run while paused.
+
+Example 5 — Linker Example (Multiple .c Files)
+file1.c
+#include <stdio.h>
+
+void hello() {
+    printf("Hello from file1!\n");
+}
+
+file2.c
+void hello();
+
+int main() {
+    hello();
+    return 0;
+}
+
+Compile & Link:
+gcc file1.c file2.c -o output_program
+
+Explanation
+
+file2.c calls a function defined in file1.c.
+
+The compiler produces:
+
+file1.o
+
+file2.o
+
+The linker combines the object files into one final program.
+
+If you change file1.c, you must recompile for the linker to update the executable.
+
+
+Example 6 — Loader Example
+simple_program.c
+#include <stdio.h>
+
+int main() {
+    printf("This is a simple program.\n");
+    return 0;
+}
+
+Compile:
+gcc simple_program.c -o simple_program
+
+Inspect loaded libraries:
+ldd simple_program
+
+Explanation
+
+ldd shows which shared libraries your program depends on, such as:
+
+libc.so (printf, scanf, etc.)
+
+ld-linux.so (loader)
+
+libgcc.so (GCC support library)
+
+These libraries are dynamically loaded when the program starts.
